@@ -1,0 +1,9 @@
+.idea
+idea/*
+/.idea
+/data
+/output
+/logs
+/__pycache__
+/checkpoints
+/conf
