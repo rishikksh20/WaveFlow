@@ -1,0 +1,376 @@
+Waveflow(
+(upsampler): Sequential(                                                                                       
+    (0): ConvTranspose1d(80, 80, kernel_size=(33,), stride=(16,), padding=(16,))
+    (1): LeakyReLU(negative_slope=0.4, inplace=True)
+  )
+  (WNs): ModuleList(
+    (0): WN2D(
+      (start): Conv2d(1, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (layers): ModuleList(
+        (0): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (1): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(2,), dilation=(2,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 2), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (2): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(4,), dilation=(4,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 4), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (3): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(8,), dilation=(8,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 8), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (4): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(16,), dilation=(16,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 16), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (5): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(32,), dilation=(32,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 32), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (6): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(64,), dilation=(64,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 64), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (7): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(128,), dilation=(128,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 128), bias=False)
+          (W_o): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (end): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    )
+    (1): WN2D(
+      (start): Conv2d(1, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (layers): ModuleList(
+        (0): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (1): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(2,), dilation=(2,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 2), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (2): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(4,), dilation=(4,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 4), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (3): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(8,), dilation=(8,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 8), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (4): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(16,), dilation=(16,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 16), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (5): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(32,), dilation=(32,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 32), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (6): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(64,), dilation=(64,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 64), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (7): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(128,), dilation=(128,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 128), bias=False)
+          (W_o): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (end): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    )
+    (2): WN2D(
+      (start): Conv2d(1, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (layers): ModuleList(
+        (0): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (1): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(2,), dilation=(2,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 2), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (2): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(4,), dilation=(4,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 4), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (3): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(8,), dilation=(8,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 8), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (4): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(16,), dilation=(16,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 16), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (5): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(32,), dilation=(32,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 32), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (6): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(64,), dilation=(64,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 64), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (7): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(128,), dilation=(128,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 128), bias=False)
+          (W_o): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (end): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    )
+    (3): WN2D(
+      (start): Conv2d(1, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (layers): ModuleList(
+        (0): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (1): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(2,), dilation=(2,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 2), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (2): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(4,), dilation=(4,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 4), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (3): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(8,), dilation=(8,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 8), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (4): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(16,), dilation=(16,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 16), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (5): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(32,), dilation=(32,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 32), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (6): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(64,), dilation=(64,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 64), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (7): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(128,), dilation=(128,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 128), bias=False)
+          (W_o): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (end): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    )
+    (4): WN2D(
+      (start): Conv2d(1, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (layers): ModuleList(
+        (0): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (1): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(2,), dilation=(2,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 2), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (2): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(4,), dilation=(4,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 4), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (3): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(8,), dilation=(8,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 8), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (4): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(16,), dilation=(16,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 16), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (5): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(32,), dilation=(32,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 32), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (6): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(64,), dilation=(64,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 64), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (7): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(128,), dilation=(128,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 128), bias=False)
+          (W_o): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (end): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    )
+    (5): WN2D(
+      (start): Conv2d(1, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (layers): ModuleList(
+        (0): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (1): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(2,), dilation=(2,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 2), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (2): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(4,), dilation=(4,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 4), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (3): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(8,), dilation=(8,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 8), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (4): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(16,), dilation=(16,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 16), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (5): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(32,), dilation=(32,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 32), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (6): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(64,), dilation=(64,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 64), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (7): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(128,), dilation=(128,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 128), bias=False)
+          (W_o): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (end): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    )
+    (6): WN2D(
+      (start): Conv2d(1, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (layers): ModuleList(
+        (0): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (1): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(2,), dilation=(2,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 2), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (2): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(4,), dilation=(4,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 4), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (3): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(8,), dilation=(8,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 8), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (4): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(16,), dilation=(16,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 16), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (5): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(32,), dilation=(32,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 32), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (6): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(64,), dilation=(64,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 64), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (7): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(128,), dilation=(128,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 128), bias=False)
+          (W_o): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (end): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    )
+    (7): WN2D(
+      (start): Conv2d(1, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (layers): ModuleList(
+        (0): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(1,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (1): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(2,), dilation=(2,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 2), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (2): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(4,), dilation=(4,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 4), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (3): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(8,), dilation=(8,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 8), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (4): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(16,), dilation=(16,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 16), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (5): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(32,), dilation=(32,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 32), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (6): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(64,), dilation=(64,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 64), bias=False)
+          (W_o): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+        (7): _NonCausalLayer2D(
+          (V): Conv1d(80, 256, kernel_size=(3,), stride=(1,), padding=(128,), dilation=(128,), bias=False)
+          (W): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), dilation=(1, 128), bias=False)
+          (W_o): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        )
+      )
+      (end): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    )
+	)
+)

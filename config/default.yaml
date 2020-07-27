@@ -1,0 +1,41 @@
+data: # root path of train/validation data (either relative/absoulte path is ok)
+  train: 'H:\Deepsync\backup\deepsync\LJSpeech-1.1\wavs'
+  validation: 'H:\Deepsync\backup\deepsync\LJSpeech-1.1\valid'
+  mel_path: 'H:\Deepsync\backup\fastspeech\data\mels'
+---
+train:
+  num_workers: 4
+  batch_size: 2
+  optimizer: 'adam'
+  adam:
+    lr: 0.0002
+    beta1: 0.5
+    beta2: 0.9
+---
+audio:
+  n_mel_channels: 80
+  segment_length: 16000
+  pad_short: 2000
+  filter_length: 1024
+  hop_length: 256 # WARNING: this can't be changed.
+  win_length: 1024
+  sampling_rate: 22050
+  mel_fmin: 0.0
+  mel_fmax: 8000.0
+---
+model:
+  flows: 8
+  n_group: 64
+  use_conv1x1: False
+  memory_efficient: False
+  dilation_channels: 64
+  residual_channels: 64
+  skip_channels: 64
+
+---
+log:
+  summary_interval: 1
+  validation_interval: 5
+  save_interval: 25
+  chkpt_dir: 'checkpoints'
+  log_dir: 'logs'

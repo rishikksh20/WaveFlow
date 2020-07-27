@@ -6,6 +6,21 @@ from modules import WN2D, InvertibleConv1x1
 import torch.nn.functional as F
 from librosa.filters import mel
 
+
+
+class WaveFlowLoss(nn.Module):
+    def __init__(self, sigma=1., elementwise_mean=True):
+        super().__init__()
+        self.sigma2 = sigma ** 2
+        self.mean = elementwise_mean
+
+    def forward(self, z, logdet):
+        loss = 0.5 * z.pow(2).sum(1) / self.sigma2 - logdet
+        loss = loss.mean()
+        if self.mean:
+            loss = loss / z.size(1)
+        return loss
+
 class WaveFlow(nn.Module):
     def __init__(self,
                  flows,
@@ -13,14 +28,13 @@ class WaveFlow(nn.Module):
                  sr,
                  window_size,
                  n_mels,
-                 use_conv1x1,
-                 memory_efficient,
-                 **kwargs):
+                 hp,
+                 use_conv1x1 = False):
         super().__init__()
         self.flows = flows
         self.n_group = n_group
         self.win_size = window_size
-        self.hop_size = 256
+        self.hop_size = hp.audio.hop_length
         self.n_mels = n_mels
         self.sr = sr
         self.sub_sr = self.hop_size // n_group
@@ -39,9 +53,10 @@ class WaveFlow(nn.Module):
         # Set up layers with the right sizes based on how many dimensions
         # have been output already
         for k in range(flows):
-            self.WNs.append(WN2D(n_group, n_mels, **kwargs))
+            self.WNs.append(WN2D(n_group, n_mels, hp.model.dilation_channels, hp.model.residual_channels,
+                                 hp.model.skip_channels))
             if use_conv1x1:
-                self.invconv1x1.append(InvertibleConv1x1(n_group, memory_efficient=memory_efficient))
+                self.invconv1x1.append(InvertibleConv1x1(n_group, memory_efficient=False))
 
         filters = mel(sr, window_size, n_mels, fmax=8000)
         self.filter_idx = np.nonzero(filters)
