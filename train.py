@@ -7,11 +7,11 @@ import tqdm
 from utils.hparams import HParam
 from utils.utils import get_commit_hash
 from torch.utils.data import DataLoader
-from waveflow import WaveFlow, WaveFlowLoss
-from mel2samp import Mel2Samp
+from model.waveflow import WaveFlow, WaveFlowLoss
+from dataset.mel2samp import Mel2Samp
 from tensorboardX import SummaryWriter
 import itertools
-from stft import TacotronSTFT
+from utils.stft import TacotronSTFT
 
 def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed, device):
     torch.manual_seed(seed)

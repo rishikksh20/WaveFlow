@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Function, set_grad_enabled, grad, gradcheck
-from util import add_weight_norms
+from utils.utils import add_weight_norms
 from functools import reduce
 from operator import mul
 

@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from util import add_weight_norms
-from modules import WN2D, InvertibleConv1x1
+from utils.utils import add_weight_norms
+from model.modules import WN2D, InvertibleConv1x1
 import torch.nn.functional as F
 from librosa.filters import mel
 

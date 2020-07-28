@@ -35,7 +35,7 @@ from scipy.io.wavfile import read
 
 # We're using the audio processing from TacoTron2 to make sure it matches
 sys.path.insert(0, 'tacotron2')
-from stft import TacotronSTFT
+from utils.stft import TacotronSTFT
 
 MAX_WAV_VALUE = 32768.0
 
