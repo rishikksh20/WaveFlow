@@ -5,15 +5,15 @@ import logging
 import argparse
 import tqdm
 from utils.hparams import HParam
-from utils.utils import get_commit_hash
+from utils.utils import get_commit_hash, num_params
 from torch.utils.data import DataLoader
 from model.waveflow import WaveFlow, WaveFlowLoss
-from dataset.mel2samp import Mel2Samp
+from dataset.melgan_dataloader import create_dataloader
 from tensorboardX import SummaryWriter
 import itertools
 from utils.stft import TacotronSTFT
 
-def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed, device):
+def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
 
@@ -26,8 +26,8 @@ def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed, device)
                  hp.audio.n_mel_channels,
                      hp).cuda()
 
-
-    optimizer = torch.optim.Adam(model.parameters(), lr=hp.train.learning_rate)
+    num_params(model)
+    optimizer = torch.optim.Adam(model.parameters(), lr=hp.train.adam.lr)
 
 
     # Load checkpoint if one exists
@@ -55,28 +55,32 @@ def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed, device)
     else:
         logger.info("Starting new training run.")
 
-    trainset = Mel2Samp(hp.data.train, hp.audio.segment_length, hp.audio.filter_length,
-                 hp.audio.hop_length, hp.audio.win_length, hp.audio.sampling_rate,
-                        hp.audio.mel_fmin, hp.audio.mel_fmax)
+    # trainset = Mel2Samp(hp.data.train, hp.audio.segment_length, hp.audio.filter_length,
+    #              hp.audio.hop_length, hp.audio.win_length, hp.audio.sampling_rate,
+    #                     hp.audio.mel_fmin, hp.audio.mel_fmax)
+    #
+    # validset = Mel2Samp(hp.data.valid, hp.audio.segment_length, hp.audio.filter_length,
+    #              hp.audio.hop_length, hp.audio.win_length, hp.audio.sampling_rate,
+    #                     hp.audio.mel_fmin, hp.audio.mel_fmax)
 
-    validset = Mel2Samp(hp.data.valid, hp.audio.segment_length, hp.audio.filter_length,
-                 hp.audio.hop_length, hp.audio.win_length, hp.audio.sampling_rate,
-                        hp.audio.mel_fmin, hp.audio.mel_fmax)
+
+
     # =====START: ADDED FOR DISTRIBUTED======
-    train_sampler = None
+    # train_sampler = None
     # =====END:   ADDED FOR DISTRIBUTED======
-    train_loader = DataLoader(trainset, num_workers=1, shuffle=False,
-                              sampler=train_sampler,
-                              batch_size=hp.train.batch_size,
-                              pin_memory=False,
-                              drop_last=True)
-
-    valid_loader = DataLoader(validset, num_workers=1, shuffle=False,
-                              sampler=train_sampler,
-                              batch_size=1,
-                              pin_memory=False,
-                              drop_last=True)
-
+    # train_loader = DataLoader(trainset, num_workers=1, shuffle=False,
+    #                           sampler=train_sampler,
+    #                           batch_size=hp.train.batch_size,
+    #                           pin_memory=False,
+    #                           drop_last=True)
+    #
+    # valid_loader = DataLoader(validset, num_workers=1, shuffle=False,
+    #                           sampler=train_sampler,
+    #                           batch_size=1,
+    #                           pin_memory=False,
+    #                           drop_last=True)
+    train_loader = create_dataloader(hp, True)
+    valid_loader = create_dataloader(hp, False)
     # Get shared output_directory ready
     stft = TacotronSTFT(filter_length=hp.audio.filter_length,
                         hop_length=hp.audio.hop_length,
@@ -95,14 +99,12 @@ def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed, device)
 
         loader = tqdm.tqdm(train_loader, desc='Loading train data')
         loss_list = []
-        for batch in loader:
+        for (mel, audio) in loader:
             model.zero_grad()
-
-            mel, audio = batch
-            mel = torch.autograd.Variable(mel.cuda())
-            audio = torch.autograd.Variable(audio.cuda())
-            z, logdet, _ = model(mel, audio)
-
+            #mel, audio = batch
+            mel = torch.autograd.Variable(mel.cuda()) # [B, num mel, num of frame]
+            audio = torch.autograd.Variable(audio.cuda()) # [B, T]
+            z, logdet, _ = model(audio, mel) # [B, T]
             loss = criterion(z, logdet)
 
             loss.backward()
@@ -117,22 +119,24 @@ def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed, device)
                 writer.add_scalar('train.z_std', z.std().item())
 
             if step % hp.log.validation_interval == 0:
-                for valid in valid_loader:
-                    mel_, audio_ = valid
-                    x, logdet_ = model.infer(mel_.cuda(), hp.model.sigma)
+                for (mel_, audio_) in valid_loader:
+                    x, logdet_ = model.infer(mel_.cuda(), hp.model.sigma) # x -> [T]
+
                     torch.clamp(x, -1, 1, out=x)
+
                     writer.add_scalar('valid.log_determinant', logdet.mean().item())
-                    writer.add_audio('actual_audio', audio_[None, :], step, sample_rate=hp.audio.sampling_rate)
-                    writer.add_audio('reconstruct_audio', x.cpu()[None, :], step, sample_rate=hp.audio.sampling_rate)
-                    mel_spec = mel_[0].cpu()
+                    writer.add_audio('actual_audio', audio_.squeeze(0).cpu().detach().numpy(), step, sample_rate=hp.audio.sampling_rate)
+                    writer.add_audio('reconstruct_audio', x.cpu().detach().numpy(), step, sample_rate=hp.audio.sampling_rate)
+                    mel_spec = mel_[0].cpu().detach()
                     mel_spec -= mel_spec.min()
                     mel_spec /= mel_spec.max()
                     writer.add_image('actual_mel-spectrum', mel_spec.flip(0), step, dataformats='HW')
-                    mel_gen, _ = stft.mel_spectrogram(x)
-                    mel_g_spec = mel_gen[0].cpu()
-                    mel_g_spec -= mel_g_spec.min()
-                    mel_g_spec /= mel_g_spec.max()
-                    writer.add_image('gen_mel-spectrum', mel_g_spec.flip(0), step, dataformats='HW')
+
+                    # mel_gen, _ = stft.mel_spectrogram(x)
+                    # mel_g_spec = mel_gen[0].cpu()
+                    # mel_g_spec -= mel_g_spec.min()
+                    # mel_g_spec /= mel_g_spec.max()
+                    # writer.add_image('gen_mel-spectrum', mel_g_spec.flip(0), step, dataformats='HW')
                     break
 
 

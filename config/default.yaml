@@ -7,6 +7,7 @@ train:
   num_workers: 4
   batch_size: 2
   optimizer: 'adam'
+  seed: 2020
   adam:
     lr: 0.0002
     beta1: 0.5
@@ -25,12 +26,13 @@ audio:
 ---
 model:
   flows: 8
-  n_group: 64
+  n_group: 16 # h
   use_conv1x1: False
   memory_efficient: False
   dilation_channels: 64
   residual_channels: 64
   skip_channels: 64
+  sigma: 1.0
 
 ---
 log:

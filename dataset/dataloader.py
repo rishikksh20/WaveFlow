@@ -106,14 +106,14 @@ def collate_fn(batch):
         c_batch = np.array([_pad_2d(x[1], max_len) for x in batch], dtype=np.float32)
         assert len(c_batch.shape) == 3
         # (B x C x T')
-        c_batch = torch.tensor(c_batch).transpose(1, 2).contiguous()
+        c_batch = torch.tensor(c_batch).transpose(1, 2).contiguous() # [batch size, num_mels, no. of frames]
         del max_len
     else:
         c_batch = None
 
     # Convert to channel first i.e., (B, C, T) / C = 1
-    x_batch = torch.tensor(x_batch).transpose(1, 2).contiguous()
-    return x_batch, c_batch
+    x_batch = torch.tensor(x_batch).squeeze(2) # [Batch, T] #.transpose(1, 2).contiguous()
+    return x_batch, c_batch # [B, T] , [B, c, Frames(T')]
 
 
 def collate_fn_synthesize(batch):

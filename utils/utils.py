@@ -5,6 +5,12 @@ from torch import nn
 import numpy as np
 from scipy.io.wavfile import read
 
+def num_params(model, print_out=True):
+    parameters = filter(lambda p: p.requires_grad, model.parameters())
+    parameters = sum([np.prod(p.size()) for p in parameters]) / 1_000_000
+    if print_out:
+        print('Trainable Parameters: %.3fM' % parameters)
+
 
 def weights_init(m):
     classname = m.__class__.__name__

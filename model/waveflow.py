@@ -71,13 +71,13 @@ class WaveFlow(nn.Module):
         N = S.size(1)
         mel_S = mel_filt @ S.transpose(0, 1).contiguous().view(N, -1)
         # compress
-        mel_S.add_(1e-7).log_()
+        mel_S.add_(1e-7).log_() # [num_mel, no_of_frames] -> [80, 832]
         return mel_S.view(self.n_mels, batch_size, -1).transpose(0, 1)
 
-    def forward(self, x, h=None):
+    def forward(self, x, h=None): # x -> [batch size, T]
         if h is None:
-            h = self.get_mel(x)
-        y = self._upsample_h(h)
+            h = self.get_mel(x)  # [batch size, num_mels, no. of frames] [1, 80, 832]
+        y = self._upsample_h(h) # [batch size, num_mels, T']
 
         batch_dim, n_mels, times = y.shape
         x = x.view(batch_dim, 1, -1, self.n_group).transpose(2, 3).contiguous()
