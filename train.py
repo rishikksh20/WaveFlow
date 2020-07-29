@@ -132,11 +132,11 @@ def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed):
                     mel_spec /= mel_spec.max()
                     writer.add_image('actual_mel-spectrum', mel_spec.flip(0), step, dataformats='HW')
 
-                    # mel_gen, _ = stft.mel_spectrogram(x)
-                    # mel_g_spec = mel_gen[0].cpu()
-                    # mel_g_spec -= mel_g_spec.min()
-                    # mel_g_spec /= mel_g_spec.max()
-                    # writer.add_image('gen_mel-spectrum', mel_g_spec.flip(0), step, dataformats='HW')
+                    mel_gen, _ = stft.mel_spectrogram(x.unsqueeze(0))
+                    mel_g_spec = mel_gen[0].cpu()
+                    mel_g_spec -= mel_g_spec.min()
+                    mel_g_spec /= mel_g_spec.max()
+                    writer.add_image('gen_mel-spectrum', mel_g_spec.flip(0), step, dataformats='HW')
                     break
 
 
