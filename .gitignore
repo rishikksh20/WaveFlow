@@ -7,3 +7,5 @@ idea/*
 /__pycache__
 /checkpoints
 /conf
+/hparams.py
+/dataloader.py
