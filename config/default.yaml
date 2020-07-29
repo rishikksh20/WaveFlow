@@ -36,8 +36,8 @@ model:
 
 ---
 log:
-  summary_interval: 1
-  validation_interval: 5
-  save_interval: 25
+  summary_interval: 100 #steps
+  validation_interval: 1000 #steps
+  save_interval: 25 #epochs
   chkpt_dir: 'checkpoints'
   log_dir: 'logs'
