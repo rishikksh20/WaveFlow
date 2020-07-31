@@ -5,13 +5,14 @@ import logging
 import argparse
 import tqdm
 from utils.hparams import HParam
-from utils.utils import get_commit_hash, num_params
-from torch.utils.data import DataLoader
+from utils.utils import get_commit_hash, num_params, plot_spectrogram_to_numpy
 from model.waveflow import WaveFlow, WaveFlowLoss
 from dataset.melgan_dataloader import create_dataloader
 from tensorboardX import SummaryWriter
 import itertools
 from utils.stft import TacotronSTFT
+
+
 
 def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed):
     torch.manual_seed(seed)
@@ -120,23 +121,24 @@ def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed):
 
             if step % hp.log.validation_interval == 0:
                 for (mel_, audio_) in valid_loader:
+                    model.eval()
                     x, logdet_ = model.infer(mel_.cuda(), hp.model.sigma) # x -> [T]
 
                     torch.clamp(x, -1, 1, out=x)
-
-                    writer.add_scalar('valid.log_determinant', logdet.mean().item())
+                    writer.add_scalar('valid.log_determinant', logdet_.mean().item())
                     writer.add_audio('actual_audio', audio_.squeeze(0).cpu().detach().numpy(), step, sample_rate=hp.audio.sampling_rate)
                     writer.add_audio('reconstruct_audio', x.cpu().detach().numpy(), step, sample_rate=hp.audio.sampling_rate)
                     mel_spec = mel_[0].cpu().detach()
                     mel_spec -= mel_spec.min()
                     mel_spec /= mel_spec.max()
-                    writer.add_image('actual_mel-spectrum', mel_spec.flip(0), step, dataformats='HW')
+                    writer.add_image('actual_mel-spectrum', plot_spectrogram_to_numpy(mel_spec.numpy()), step, dataformats='HWC')
 
                     mel_gen, _ = stft.mel_spectrogram(x.unsqueeze(0))
-                    mel_g_spec = mel_gen[0].cpu()
+                    mel_g_spec = mel_gen[0].cpu().detach()
                     mel_g_spec -= mel_g_spec.min()
                     mel_g_spec /= mel_g_spec.max()
-                    writer.add_image('gen_mel-spectrum', mel_g_spec.flip(0), step, dataformats='HW')
+                    writer.add_image('gen_mel-spectrum', plot_spectrogram_to_numpy(mel_g_spec.numpy()), step, dataformats='HWC')
+                    model.train()
                     break
 
 
