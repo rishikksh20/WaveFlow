@@ -2,8 +2,7 @@ import os
 import argparse
 import torch
 from model.waveflow import WaveFlow
-from utils.util import remove_weight_norms
-from train import get_instance
+from utils.utils import remove_weight_norms
 from librosa import load
 from librosa.output import write_wav
 from time import time
@@ -94,7 +93,7 @@ if __name__ == '__main__':
                         help='indices of GPUs to enable (default: all)')
 
     args = parser.parse_args()
-    checkpoint = torch.load(args.checkpoint_path)
+    checkpoint = torch.load(args.chkpt)
     if args.config is not None:
         hp = HParam(args.config)
     else:
