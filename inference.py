@@ -9,6 +9,7 @@ from time import time
 import math
 import numpy as np
 from utils.hparams import HParam, load_hparam_str
+from denoiser import Denoiser
 
 def main(hp, checkpoint, infile, outfile, sigma, dur, half, is_mel):
     # build model architecture
@@ -67,14 +68,20 @@ def main(hp, checkpoint, infile, outfile, sigma, dur, half, is_mel):
         
     
     start = time()
-    x, logdet = model.infer(mel, sigma)
+    x, logdet = model.infer(mel, sigma) # x -> [T]
     cost = time() - start
+    audio = x
+    if args.d:
+        denoiser = Denoiser(model).cuda()
+        audio = denoiser(audio, 0.0015) # [B, 1, T]
+        audio = audio.squeeze()
+        audio = audio[:-(hp.audio.hop_length * 10)]
 
     print("Backward LL:", -logdet.mean().item() / x.size(0) - 0.5 * (1 + math.log(2 * math.pi) + 2 * math.log(sigma)))
 
     print("Time cost: {:.4f}, Speed: {:.4f} kHz".format(cost, x.numel() / cost / 1000))
     print(x.max().item(), x.min().item())
-    write_wav(outfile, x.cpu().float().numpy(), sr, False)
+    write_wav(outfile, audio.cpu().float().numpy(), sr, False)
 
 
 if __name__ == '__main__':
@@ -89,7 +96,8 @@ if __name__ == '__main__':
                         help="yaml file for config. will use hp_str from checkpoint if not given.")
     parser.add_argument('-p', '--chkpt', default=None, type=str,
                         help='path to latest checkpoint (default: None)')
-    parser.add_argument('-d', '--device', default=None, type=str,
+    parser.add_argument('-d', action='store_true', help="denoising ")
+    parser.add_argument('-g', '--gpu', default=None, type=str,
                         help='indices of GPUs to enable (default: all)')
 
     args = parser.parse_args()
@@ -99,7 +107,7 @@ if __name__ == '__main__':
     else:
         hp = load_hparam_str(checkpoint['hp_str'])
     
-    if args.device:
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.device
+    if args.gpu:
+        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     print("Mel file input : ", args.mel)
     main(hp, checkpoint, args.infile, args.outfile, args.sigma, args.duration, args.half, args.mel)
