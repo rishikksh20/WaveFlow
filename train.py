@@ -11,13 +11,15 @@ from dataset.melgan_dataloader import create_dataloader
 from tensorboardX import SummaryWriter
 import itertools
 from utils.stft import TacotronSTFT
-
+from torch.cuda import amp
 
 
 def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
-
+    if args.amp:
+        print("Automatic Mixed Precision Training")
+        scaler = amp.GradScaler()
 
     criterion = WaveFlowLoss(hp.model.sigma)
     model = WaveFlow(hp.model.flows,
@@ -56,30 +58,7 @@ def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed):
     else:
         logger.info("Starting new training run.")
 
-    # trainset = Mel2Samp(hp.data.train, hp.audio.segment_length, hp.audio.filter_length,
-    #              hp.audio.hop_length, hp.audio.win_length, hp.audio.sampling_rate,
-    #                     hp.audio.mel_fmin, hp.audio.mel_fmax)
-    #
-    # validset = Mel2Samp(hp.data.valid, hp.audio.segment_length, hp.audio.filter_length,
-    #              hp.audio.hop_length, hp.audio.win_length, hp.audio.sampling_rate,
-    #                     hp.audio.mel_fmin, hp.audio.mel_fmax)
 
-
-
-    # =====START: ADDED FOR DISTRIBUTED======
-    # train_sampler = None
-    # =====END:   ADDED FOR DISTRIBUTED======
-    # train_loader = DataLoader(trainset, num_workers=1, shuffle=False,
-    #                           sampler=train_sampler,
-    #                           batch_size=hp.train.batch_size,
-    #                           pin_memory=False,
-    #                           drop_last=True)
-    #
-    # valid_loader = DataLoader(validset, num_workers=1, shuffle=False,
-    #                           sampler=train_sampler,
-    #                           batch_size=1,
-    #                           pin_memory=False,
-    #                           drop_last=True)
     train_loader = create_dataloader(hp, True)
     valid_loader = create_dataloader(hp, False)
     # Get shared output_directory ready
@@ -105,12 +84,20 @@ def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed):
             #mel, audio = batch
             mel = torch.autograd.Variable(mel.cuda()) # [B, num mel, num of frame]
             audio = torch.autograd.Variable(audio.cuda()) # [B, T]
-            z, logdet, _ = model(audio, mel) # [B, T]
-            loss = criterion(z, logdet)
+            if args.amp :
+                with amp.autocast():
+                    z, logdet, _ = model(audio, mel)  # [B, T]
+                    loss = criterion(z, logdet)
+                scaler.scale(loss).backward()
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                z, logdet, _ = model(audio, mel) # [B, T]
+                loss = criterion(z, logdet)
+                loss.backward()
+                optimizer.step()
 
-            loss.backward()
             loss_list.append(loss.item())
-            optimizer.step()
 
             loader.set_description("Avg Loss : loss %.04f | step %d" % (sum(loss_list) / len(loss_list), step))
             if step % hp.log.summary_interval == 0:
@@ -166,6 +153,7 @@ if __name__ == '__main__':
                         help="path of checkpoint pt file to resume training")
     parser.add_argument('-n', '--name', type=str, required=True,
                         help="name of the model for logging, saving checkpoint")
+    parser.add_argument('--amp', action='store_true')
     args = parser.parse_args()
 
     hp = HParam(args.config)
