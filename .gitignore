@@ -9,3 +9,7 @@ idea/*
 /conf
 /hparams.py
 /dataloader.py
+/samples
+/model/__pycache__
+/dataset/__pycache__
+/utils/__pycache__
