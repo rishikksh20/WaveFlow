@@ -17,6 +17,9 @@ from torch.cuda import amp
 def train(args, chkpt_dir, chkpt_path, writer, logger, hp, hp_str, seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.benchmark = (
+        True  # https://github.com/pytorch/pytorch/issues/6351
+    )
     if args.amp:
         print("Automatic Mixed Precision Training")
         scaler = amp.GradScaler()

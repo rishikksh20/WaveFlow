@@ -9,9 +9,11 @@ from time import time
 import math
 import numpy as np
 from utils.hparams import HParam, load_hparam_str
+from utils.utils import set_deterministic_pytorch
 from denoiser import Denoiser
 
-def main(hp, checkpoint, infile, outfile, sigma, dur, half, is_mel):
+def main(hp, checkpoint, infile, outfile, filename, sigma, dur, half, is_mel, device):
+    set_deterministic_pytorch()
     # build model architecture
     model = model = WaveFlow(hp.model.flows,
                  hp.model.n_group,
@@ -23,6 +25,7 @@ def main(hp, checkpoint, infile, outfile, sigma, dur, half, is_mel):
 
     # load state dict
     state_dict = checkpoint['model']
+    filename = filename + "_" +checkpoint['githash'] + "_" + str(checkpoint['epoch'])
     # if config['n_gpu'] > 1:
     #     model = torch.nn.DataParallel(model)
     model.load_state_dict(state_dict)
@@ -32,13 +35,16 @@ def main(hp, checkpoint, infile, outfile, sigma, dur, half, is_mel):
     model.apply(remove_weight_norms)
 
     # prepare model for testing
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = model.to(device)
     model.eval()
 
     sr = hp.audio.sampling_rate
     if is_mel:
-        mel = torch.from_numpy(np.load(infile)).unsqueeze(0).to(device)   
+        mel = torch.from_numpy(np.load(infile)).unsqueeze(0).to(device)
+        if half: 
+            filename = filename + "_" + "fp16"
+            mel = mel.half()
+            model = model.half()
     else :
         y, _ = load(infile, sr=sr, duration=dur)
         
@@ -72,22 +78,23 @@ def main(hp, checkpoint, infile, outfile, sigma, dur, half, is_mel):
     cost = time() - start
     audio = x
     if args.d:
-        denoiser = Denoiser(model).cuda()
-        audio = denoiser(audio, 0.0015) # [B, 1, T]
+        filename = filename + "_" + "d"
+        denoiser = Denoiser(model, half=half, device=device).to(device)
+        audio = denoiser(audio, 0.00015) # [B, 1, T]
         audio = audio.squeeze()
         audio = audio[:-(hp.audio.hop_length * 10)]
 
     print("Backward LL:", -logdet.mean().item() / x.size(0) - 0.5 * (1 + math.log(2 * math.pi) + 2 * math.log(sigma)))
-
+    filename = filename + ".wav"
     print("Time cost: {:.4f}, Speed: {:.4f} kHz".format(cost, x.numel() / cost / 1000))
     print(x.max().item(), x.min().item())
-    write_wav(outfile, audio.cpu().float().numpy(), sr, False)
+    write_wav(os.path.join(outfile, filename), audio.cpu().float().numpy(), sr, False)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='WaveGlow inference')
     parser.add_argument('infile', type=str, help='wave file to generate mel-spectrogram')
-    parser.add_argument('outfile', type=str, help='output file name')
+    parser.add_argument('--out', type=str,  default=".", help='output file name')
     parser.add_argument('--duration', type=float, help='duration of audio, in seconds')
     parser.add_argument('--half', action='store_true')
     parser.add_argument('--mel', action='store_true')
@@ -97,17 +104,22 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--chkpt', default=None, type=str,
                         help='path to latest checkpoint (default: None)')
     parser.add_argument('-d', action='store_true', help="denoising ")
-    parser.add_argument('-g', '--gpu', default=None, type=str,
-                        help='indices of GPUs to enable (default: all)')
+    parser.add_argument('--cpu', action='store_true')
 
     args = parser.parse_args()
+    torch.manual_seed(2020)
+    
     checkpoint = torch.load(args.chkpt)
     if args.config is not None:
         hp = HParam(args.config)
     else:
         hp = load_hparam_str(checkpoint['hp_str'])
-    
-    if args.gpu:
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
+    filename = "out"
+    if args.cpu:
+        filename = filename + "_" + "cpu"
+        device = torch.device('cpu')
+    else:
+        filename = filename + "_" + "cuda"
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print("Mel file input : ", args.mel)
-    main(hp, checkpoint, args.infile, args.outfile, args.sigma, args.duration, args.half, args.mel)
+    main(hp, checkpoint, args.infile, args.out, filename, args.sigma, args.duration, args.half, args.mel, device)

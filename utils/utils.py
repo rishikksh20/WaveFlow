@@ -1,6 +1,7 @@
 import random
 import subprocess
 import os
+import torch
 from torch import nn
 import numpy as np
 from scipy.io.wavfile import read
@@ -82,3 +83,17 @@ def add_weight_norms(m):
 def ensure_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
+        
+def set_deterministic_pytorch():
+    """Ensures pytorch produces deterministic results depending on the program arguments
+    :param Namespace args: The program arguments
+    """
+
+    # debug mode setting
+    # 0 would be fastest, but 1 seems to be reasonable
+    # considering reproducibility
+    # remove type check
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = (
+        False  # https://github.com/pytorch/pytorch/issues/6351
+    )
