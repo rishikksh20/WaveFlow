@@ -75,12 +75,13 @@ def main(hp, checkpoint, infile, outfile, filename, sigma, dur, half, is_mel, de
     
     start = time()
     x, logdet = model.infer(mel, sigma) # x -> [T]
+    filename = filename + "_s-" + str(sigma)
     cost = time() - start
     audio = x
     if args.d:
         filename = filename + "_" + "d"
         denoiser = Denoiser(model, half=half, device=device).to(device)
-        audio = denoiser(audio, 0.00015) # [B, 1, T]
+        audio = denoiser(audio, 0.0001) # [B, 1, T]
         audio = audio.squeeze()
         audio = audio[:-(hp.audio.hop_length * 10)]
 
@@ -98,7 +99,7 @@ if __name__ == '__main__':
     parser.add_argument('--duration', type=float, help='duration of audio, in seconds')
     parser.add_argument('--half', action='store_true')
     parser.add_argument('--mel', action='store_true')
-    parser.add_argument('-s', '--sigma', type=float, default=1.0)
+    parser.add_argument('-s', '--sigma', type=float, default=1)
     parser.add_argument('-c', '--config', type=str, default=None,
                         help="yaml file for config. will use hp_str from checkpoint if not given.")
     parser.add_argument('-p', '--chkpt', default=None, type=str,
