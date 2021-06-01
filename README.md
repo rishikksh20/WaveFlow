@@ -19,6 +19,6 @@ python .\train.py -c .\config\default.yaml -n "first"
 ## Inference :
 
 ```
-python .\inference.py input_file output_file -r checkpoint_path --mel
+ python .\inference.py .\mel_bkp.npy -p .\checkpoints\wf_8_64_64\wf_8_64_64_0772e8f_0117.pt --mel --half -d
 ```
 
