@@ -22,3 +22,15 @@ python .\train.py -c .\config\default.yaml -n "first"
  python .\inference.py .\mel_bkp.npy -p .\checkpoints\wf_8_64_64\wf_8_64_64_0772e8f_0117.pt --mel --half -d
 ```
 
+## Citations :
+```
+@misc{ping2020waveflow,
+      title={WaveFlow: A Compact Flow-based Model for Raw Audio}, 
+      author={Wei Ping and Kainan Peng and Kexin Zhao and Zhao Song},
+      year={2020},
+      eprint={1912.01219},
+      archivePrefix={arXiv},
+      primaryClass={cs.SD}
+}
+```
+
